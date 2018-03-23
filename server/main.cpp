@@ -1,36 +1,41 @@
 
 #include "Server.h"
 #include <thread>
+#include <vector>
 using namespace std;
 
-void startRead(Server server){
-    server.serverRead();
+void startRead(Server server, int commSocket){
+    server.userLogging(commSocket);
+    while (true){
+    /*while(*/server.serverRead(commSocket)/*<=0)*/;
+
+    server.serverSend();
+    }
+
 }
 
 void startSend(Server server){
-    server.serverSend();
+    while (true) {
+        //
+    }
+
 }
 
 
 
 int main(int argc, char const *argv[]) {
-    // if (argc> 2){
-    //     Server server(atoi(argv[1]));
-    // } else{
-    //     Server server;
-    // }
-Server server;
+
+    int commSocket;
+    Server server;
     server.init();
     std::cout << server.port << '\n';
     server.serverListen();
-
+    vector<thread*> threads;
     while(true){
-    server.serverAccept();
-    thread serverRead(startRead, server);
-    thread serverSend(startSend, server);
-    serverRead.join();
-    serverSend.join();
+    commSocket=server.serverAccept();
+    threads.push_back(new thread(startRead, server, commSocket));
     }
+    //readAndSend.join();
     server.end();
 
 }

@@ -8,6 +8,7 @@
 #include <queue>
 #include "Message.h"
 #include <cstdlib>
+#include <map>
 
 using namespace std;
 
@@ -18,6 +19,8 @@ public:
     struct sockaddr_in clientAddress;
     socklen_t addrlen;
     int commSocket;
+    int commSocket1;
+    std::map<std::string, int> socketUsers;
     const char *message = "Hola, estoy aquí para servirte";
     const int bufferSize = 1024;
     std::queue<Message*> messageQueue;
@@ -25,8 +28,9 @@ public:
     Server(int port = 8888):port(port){}
     bool init();
     bool serverListen();
-    bool serverAccept();
-    bool serverRead();
+    int serverAccept();
+    bool userLogging(int commSocket);
+    int serverRead(int commSocket);
     bool serverSend();
     void end();
 };
